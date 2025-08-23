@@ -32,7 +32,7 @@ curl -X POST -F "file=@example.txt" http://localhost:8080/api/upload
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/go-file-storage.git
+git clone https://github.com/rapir-0/go-file-storage.git
 cd go-file-storage
 
 # Run the server
@@ -90,7 +90,7 @@ File content with appropriate headers for download.
 version: '3.8'
 services:
   file-storage:
-    image: your-username/go-file-storage:latest
+    image: rapir-0/go-file-storage:latest
     ports:
       - "8080:8080"
     volumes:
@@ -106,7 +106,7 @@ docker-compose up -d
 
 ### Option 2: Binary Release
 
-1. Download the latest release from [Releases](https://github.com/your-username/go-file-storage/releases)
+1. Download the latest release from [Releases](https://github.com/rapir-0/go-file-storage/releases)
 2. Extract and run:
    ```bash
    ./go-file-storage
@@ -116,7 +116,7 @@ docker-compose up -d
 
 ```bash
 # Prerequisites: Go 1.21+
-git clone https://github.com/your-username/go-file-storage.git
+git clone https://github.com/rapir-0/go-file-storage.git
 cd go-file-storage
 
 # Build
@@ -195,7 +195,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you find this project helpful, please give it a ⭐ on GitHub!
 
-**Issues & Questions:** [GitHub Issues](https://github.com/your-username/go-file-storage/issues)
+**Issues & Questions:** [GitHub Issues](https://github.com/rapir-0/go-file-storage/issues)
 
 ---
 
