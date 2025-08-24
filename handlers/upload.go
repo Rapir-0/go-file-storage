@@ -4,13 +4,12 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 )
-
-const ServerIP = "http://localhost:8080" // Добавил http://
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
@@ -18,10 +17,17 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse multipart form (10MB limit)
-	err := r.ParseMultipartForm(10 << 20)
+	if appConfig == nil {
+		http.Error(w, "Server configuration not initialized", http.StatusInternalServerError)
+		return
+	}
+
+	// Parse multipart form с динамическим лимитом
+	maxSize := appConfig.GetMaxFileSizeBytes()
+	err := r.ParseMultipartForm(maxSize)
 	if err != nil {
-		http.Error(w, "File size exceeds 10MB limit", http.StatusBadRequest)
+		errMsg := fmt.Sprintf("File size exceeds %d MB limit", appConfig.Upload.MaxFileSize)
+		http.Error(w, errMsg, http.StatusBadRequest)
 		return
 	}
 
@@ -38,11 +44,12 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	fileExt := filepath.Ext(handler.Filename)
 	uniqueFilename := fileID + fileExt
 
-	// Create storage directory if it doesn't exist
-	os.MkdirAll("../storage", 0755)
+	// Используем путь из конфигурации
+	storagePath := appConfig.Storage.Path
 
 	// Create destination file
-	dst, err := os.Create("../storage/" + uniqueFilename)
+	filePath := filepath.Join(storagePath, uniqueFilename)
+	dst, err := os.Create(filePath)
 	if err != nil {
 		http.Error(w, "Error creating file", http.StatusInternalServerError)
 		return
@@ -61,7 +68,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		"success":       true,
 		"file_id":       fileID,
 		"original_name": handler.Filename,
-		"download_url":  ServerIP + "/api/download?filename=" + uniqueFilename,
+		"download_url":  appConfig.Server.URL + "/api/download?filename=" + uniqueFilename,
 		"size":          handler.Size,
 	}
 
