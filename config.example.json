@@ -1,0 +1,13 @@
+{
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8080,
+    "url": "http://localhost:8080"
+  },
+  "storage": {
+    "path": "./storage"
+  },
+  "upload": {
+    "max_file_size_mb": 10
+  }
+}
